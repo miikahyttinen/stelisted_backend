@@ -1,0 +1,27 @@
+{
+  "name": "setlisted_backend",
+  "version": "1.0.0",
+  "description": "Node.js backend for Full Stack Programming course at the University of Helsinki. This is the back end REST Api for the application. It uses MongoDB to store data.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/miikahyttinen/setlisted_backend.git"
+  },
+  "author": "Miika Hyttinen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/miikahyttinen/setlisted_backend/issues"
+  },
+  "homepage": "https://github.com/miikahyttinen/setlisted_backend#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.2"
+  }
+}

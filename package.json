@@ -19,7 +19,10 @@
   "homepage": "https://github.com/miikahyttinen/setlisted_backend#readme",
   "dependencies": {
     "cors": "^2.8.5",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "node-fetch": "^2.6.0",
+    "query-string": "^6.8.3",
+    "url-parse": "^1.4.7"
   },
   "devDependencies": {
     "nodemon": "^1.19.2"

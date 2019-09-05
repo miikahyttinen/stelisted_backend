@@ -2,6 +2,8 @@ const express = require('express')
 const app = express()
 const cors = require('cors')
 const middleware = require('./utils/middleware')
+const queryString = require('query-string')
+const fetch = require('node-fetch')
 
 app.use(cors())
 app.use(middleware.requestLogger)
@@ -30,6 +32,17 @@ app.get('/', (req, res) => {
 
 app.get('/songs', (req, res) => {
   res.json(songs)
+})
+
+app.get('/spotify', async (req, res) => {
+  const spotifyAccessToken = queryString.parseUrl(req.headers.referer).query
+    .access_token
+  const apiResponse = await fetch(
+    `http://api.spotify.com/v1/playlists/1iHADEaVKULre5JnAMAslK?access_token=${spotifyAccessToken}`
+  )
+    .then(res => res.json()) // expecting a json response
+    .then(json => json)
+  res.json(apiResponse)
 })
 
 const PORT = 3001

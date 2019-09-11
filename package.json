@@ -4,6 +4,7 @@
   "description": "Node.js backend for Full Stack Programming course at the University of Helsinki. This is the back end REST Api for the application. It uses MongoDB to store data.",
   "main": "index.js",
   "scripts": {
+    "watch": "nodemon index.js",
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

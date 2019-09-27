@@ -14,16 +14,62 @@ app.get('/', (req, res) => {
   res.send('<h1>This is Setlisted!</h1>')
 })
 
-app.get('/spotify/', async (req, res) => {
+app.get('/setlist', (req, res) => {
+  const allSetlists = [
+    {
+      name: 'Hääkeikka 12.3.2019',
+      tracks: [
+        {
+          name: 'Smoke on the water',
+          artist: 'Deep Purple',
+          key: 'Em'
+        },
+        {
+          name: 'Grow Up',
+          artist: 'DJ Maacalangelo',
+          key: 'Dm'
+        },
+        {
+          name: 'Rakastuin lesboon',
+          artist: 'Ursus Factory',
+          key: 'Alkaa D'
+        }
+      ]
+    },
+    {
+      name: 'Piazza Tahko 31.12.2019',
+      tracks: [
+        {
+          name: 'Cotton eye Joe',
+          artist: 'Deep Purple',
+          key: 'G'
+        },
+        {
+          name: 'Ihanaa leijonat',
+          artist: 'Antero Mertaranta',
+          key: 'Am'
+        },
+        {
+          name: 'Symphony',
+          artist: 'Clean bandit feat Zara Larsson',
+          key: 'Alkaa E'
+        }
+      ]
+    }
+  ]
+  res.send(allSetlists)
+})
+
+app.get('/spotify', async (req, res) => {
   const accessToken = `access_token=${
-    queryString.parseUrl(req.headers.referer).query
-  }`.access_token
-  let url = `${baseApiUrl}/playlists/1iHADEaVKULre5JnAMAslK/tracks?${accessToken}`
+    queryString.parseUrl(req.headers.referer).query.access_token
+  }`
+  let url = `${baseApiUrl}/playlists/5cbfV6QdSVw05LhZyVcv7B/tracks?${accessToken}`
   let response = await fetch(url)
   let data = await response.json()
   let responseJson = data.items
   while (data.next !== null) {
-    url = `${data.next}&access_token=${spotifyAccessToken}`
+    url = `${data.next}&${accessToken}`
     response = await fetch(url)
     data = await response.json()
     responseJson = responseJson.concat(data.items)

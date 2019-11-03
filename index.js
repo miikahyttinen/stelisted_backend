@@ -11,7 +11,7 @@ const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 
 const baseApiUrl = 'http://api.spotify.com/v1'
-//change this to connect prod DB
+//change this to connect production DB
 const mongoUrl = process.env.MONGODB_URI_DEV
 mongoose.connect(mongoUrl, { useNewUrlParser: true, useFindAndModify: false })
 
@@ -28,50 +28,13 @@ app.get('/', (req, res) => {
   res.send('<h1>This is Setlisted!</h1>')
 })
 
-app.get('/setlist', (req, res) => {
-  const allSetlists = [
-    {
-      name: 'Hääkeikka 12.3.2019',
-      tracks: [
-        {
-          name: 'Smoke on the water',
-          artist: 'Deep Purple',
-          key: 'Em'
-        },
-        {
-          name: 'Grow Up',
-          artist: 'DJ Maacalangelo',
-          key: 'Dm'
-        },
-        {
-          name: 'Rakastuin lesboon',
-          artist: 'Ursus Factory',
-          key: 'Alkaa D'
-        }
-      ]
-    },
-    {
-      name: 'Piazza Tahko 31.12.2019',
-      tracks: [
-        {
-          name: 'Cotton eye Joe',
-          artist: 'Deep Purple',
-          key: 'G'
-        },
-        {
-          name: 'Ihanaa leijonat',
-          artist: 'Antero Mertaranta',
-          key: 'Am'
-        },
-        {
-          name: 'Symphony',
-          artist: 'Clean bandit feat Zara Larsson',
-          key: 'Alkaa E'
-        }
-      ]
-    }
-  ]
-  res.send(allSetlists)
+app.get('/setlists', async (req, res, next) => {
+  try {
+    const allSetlists = await Setlist.find({}).populate('songs', [])
+    await res.json(allSetlists)
+  } catch (exception) {
+    next(exception)
+  }
 })
 
 app.get('/spotify', async (req, res) => {
@@ -109,18 +72,14 @@ app.post('/song', async (request, response, next) => {
 
 app.post('/setlist', async (request, response, next) => {
   const body = request.body
-
-  console.log('BODY ------------->:', body)
-
   try {
-    if (body.name === undefined || body.songIds === undefined) {
-      response.status(400).json({ error: 'name or songIds undefined' })
+    if (body.name === undefined || body.songs === undefined) {
+      response.status(400).json({ error: 'name or songs undefined' })
     } else {
       const setlist = new Setlist({
-        songIds: body.songIds,
+        songs: body.songs,
         name: body.name
       })
-      console.log('PÄÄSTIN TÄHÄN')
       const savedSetlist = await setlist.save()
       await response.status(201).json(savedSetlist)
     }

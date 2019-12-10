@@ -3,7 +3,6 @@ const express = require('express')
 const app = express()
 const cors = require('cors')
 const middleware = require('./utils/middleware')
-const queryString = require('query-string')
 const fetch = require('node-fetch')
 const Song = require('./models/song')
 const Setlist = require('./models/setlist')
@@ -28,20 +27,28 @@ app.get('/', (req, res) => {
   res.send('<h1>This is Setlisted!</h1>')
 })
 
-app.get('/setlists', async (req, res, next) => {
+app.get('/setlist/all', async (req, res, next) => {
   try {
     const allSetlists = await Setlist.find({}).populate('songs', [])
-    await res.json(allSetlists)
+    res.json(allSetlists)
   } catch (exception) {
     next(exception)
   }
 })
 
-app.get('/spotify', async (req, res) => {
-  const accessToken = `access_token=${
-    queryString.parseUrl(req.headers.referer).query.access_token
-  }`
-  let url = `${baseApiUrl}/playlists/5cbfV6QdSVw05LhZyVcv7B/tracks?${accessToken}`
+app.get('/song/all', async (req, res, next) => {
+  try {
+    const allSongs = await Song.find()
+    res.json(allSongs)
+  } catch (exception) {
+    next(exception)
+  }
+})
+
+app.get('/spotify/:id', async (req, res) => {
+  const playlistId = req.params.id
+  const accessToken = `access_token=${req.headers.authorization}`
+  let url = `${baseApiUrl}/playlists/${playlistId}/tracks?${accessToken}`
   let response = await fetch(url)
   let data = await response.json()
   let responseJson = data.items
@@ -63,7 +70,7 @@ app.post('/song', async (request, response, next) => {
     } else {
       const song = new Song(body)
       const savedSong = await song.save()
-      await response.status(201).json(savedSong)
+      response.status(201).json(savedSong)
     }
   } catch (exception) {
     next(exception)
@@ -81,7 +88,7 @@ app.post('/setlist', async (request, response, next) => {
         name: body.name
       })
       const savedSetlist = await setlist.save()
-      await response.status(201).json(savedSetlist)
+      response.status(201).json(savedSetlist)
     }
   } catch (exception) {
     next(exception)

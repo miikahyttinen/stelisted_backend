@@ -63,7 +63,6 @@ app.get('/spotify/:id', async (req, res) => {
 
 app.post('/song', async (request, response, next) => {
   const body = request.body
-
   try {
     if (body.name === undefined || body.artist === undefined) {
       response.status(400).json({ error: 'title or url undefined' })
@@ -72,6 +71,15 @@ app.post('/song', async (request, response, next) => {
       const savedSong = await song.save()
       response.status(201).json(savedSong)
     }
+  } catch (exception) {
+    next(exception)
+  }
+})
+
+app.delete('/song/:id', async (req, res, next) => {
+  try {
+    const result = await Song.findByIdAndRemove(req.params.id)
+    console.log('RESULT OF REMOVE SONG OPERATION -->', result)
   } catch (exception) {
     next(exception)
   }

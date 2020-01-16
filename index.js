@@ -78,8 +78,14 @@ app.post('/song', async (request, response, next) => {
 
 app.delete('/song/:id', async (req, res, next) => {
   try {
+    console.log('REQ PARAMS ID -->', req.params.id)
     const result = await Song.findByIdAndRemove(req.params.id)
     console.log('RESULT OF REMOVE SONG OPERATION -->', result)
+    if (result !== null) {
+      res.status(200).json(result)
+    } else {
+      res.status(204).json({ error: 'no song with that id' })
+    }
   } catch (exception) {
     next(exception)
   }

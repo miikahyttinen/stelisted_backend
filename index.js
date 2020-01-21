@@ -78,13 +78,37 @@ app.post('/song', async (request, response, next) => {
 
 app.delete('/song/:id', async (req, res, next) => {
   try {
-    console.log('REQ PARAMS ID -->', req.params.id)
     const result = await Song.findByIdAndRemove(req.params.id)
-    console.log('RESULT OF REMOVE SONG OPERATION -->', result)
     if (result !== null) {
       res.status(200).json(result)
     } else {
       res.status(204).json({ error: 'no song with that id' })
+    }
+  } catch (exception) {
+    next(exception)
+  }
+})
+
+app.put('/song', async (request, response, next) => {
+  const body = request.body
+  try {
+    if (
+      body.id === undefined ||
+      body.name === undefined ||
+      body.artist === undefined ||
+      body.key === undefined
+    ) {
+      response.status(400).json({ error: 'id, name, artist or key undefined' })
+    } else {
+      const update = {
+        name: body.name,
+        artist: body.artist,
+        key: body.key
+      }
+      const updated = await Song.findByIdAndUpdate(body.id, update, {
+        new: true
+      })
+      response.status(201).json(updated)
     }
   } catch (exception) {
     next(exception)

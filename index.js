@@ -1,7 +1,7 @@
 require('dotenv').config()
 const express = require('express')
 const app = express()
-const cors = require('cors')
+//const cors = require('cors')
 const middleware = require('./utils/middleware')
 const fetch = require('node-fetch')
 const Song = require('./models/song')
@@ -14,7 +14,8 @@ const baseApiUrl = 'http://api.spotify.com/v1'
 const mongoUrl = process.env.MONGODB_URI_DEV
 mongoose.connect(mongoUrl, { useNewUrlParser: true, useFindAndModify: false })
 
-app.use(cors())
+app.use(express.static('build'))
+//app.use(cors())
 app.use(middleware.requestLogger)
 app.use(bodyParser.json())
 

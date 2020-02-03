@@ -19,7 +19,7 @@ app.use(express.static('build'))
 app.use(middleware.requestLogger)
 app.use(bodyParser.json())
 
-const PORT = 3001
+const PORT = 3001 || process.env.PORT
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })

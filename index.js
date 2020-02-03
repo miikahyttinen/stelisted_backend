@@ -65,7 +65,7 @@ app.post('/song', async (request, response, next) => {
   const body = request.body
   try {
     if (body.name === undefined || body.artist === undefined) {
-      response.status(400).json({ error: 'title or url undefined' })
+      response.status(400).json({ error: 'song name or artist undefined' })
     } else {
       const song = new Song(body)
       const savedSong = await song.save()

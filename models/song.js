@@ -3,8 +3,12 @@ const mongoose = require('mongoose')
 const songSchema = mongoose.Schema({
   name: String,
   artist: String,
-  // here key means a key of the song like E minor
-  key: String
+  // here key means a key of the song e.g. E minor
+  key: String,
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }
 })
 
 songSchema.set('toJSON', {

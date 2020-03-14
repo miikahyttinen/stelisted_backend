@@ -6,13 +6,7 @@ const userSchema = mongoose.Schema({
     type: String,
     unique: true
   },
-  passwordHash: String,
-  setlists: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Setlist'
-    }
-  ]
+  passwordHash: String
 })
 
 userSchema.set('toJSON', {

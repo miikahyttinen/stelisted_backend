@@ -1,26 +1,43 @@
 const songsRouter = require('express').Router()
 const Song = require('../models/song')
-// TODO const User = require('../models/user')
-// TODO const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken')
+const helpers = require('../utils/helpers')
 
 songsRouter.get('/all', async (req, res, next) => {
   try {
-    const allSongs = await Song.find()
+    const token = helpers.getTokenFrom(req)
+    const decodedToken = jwt.verify(token, process.env.SECRET)
+    if (!token || !decodedToken.id) {
+      return res.status(401).json({ error: 'token missing or invalid' })
+    }
+
+    const allSongs = await Song.find({ user: decodedToken.id })
     res.json(allSongs)
   } catch (exception) {
     next(exception)
   }
 })
 
-songsRouter.post('/song', async (request, response, next) => {
-  const body = request.body
+songsRouter.post('/', async (req, res, next) => {
   try {
+    const token = helpers.getTokenFrom(req)
+    const decodedToken = jwt.verify(token, process.env.SECRET)
+    if (!token || !decodedToken.id) {
+      return res.status(401).json({ error: 'token missing or invalid' })
+    }
+
+    const body = req.body
     if (body.name === undefined || body.artist === undefined) {
-      response.status(400).json({ error: 'song name or artist undefined' })
+      res.status(400).json({ error: 'song name or artist undefined' })
     } else {
-      const song = new Song(body)
+      const song = new Song({
+        artist: body.artist,
+        key: body.key,
+        name: body.name,
+        user: decodedToken.id
+      })
       const savedSong = await song.save()
-      response.status(201).json(savedSong)
+      res.status(201).json(savedSong)
     }
   } catch (exception) {
     next(exception)
@@ -28,6 +45,15 @@ songsRouter.post('/song', async (request, response, next) => {
 })
 
 songsRouter.delete('/:id', async (req, res, next) => {
+  const token = helpers.getTokenFrom(req)
+  const decodedToken = jwt.verify(token, process.env.SECRET)
+  if (!token || !decodedToken.id) {
+    return res.status(401).json({ error: 'token missing or invalid' })
+  }
+  const song = await Song.findOne({ _id: req.params.id })
+  if (song.user.toString() !== decodedToken.id.toString()) {
+    return res.status(401).json({ error: 'user cannot edit this song' })
+  }
   try {
     const result = await Song.findByIdAndRemove(req.params.id)
     if (result !== null) {
@@ -40,16 +66,26 @@ songsRouter.delete('/:id', async (req, res, next) => {
   }
 })
 
-songsRouter.put('/', async (request, response, next) => {
-  const body = request.body
+songsRouter.put('/', async (req, res, next) => {
   try {
+    const token = helpers.getTokenFrom(req)
+    const decodedToken = jwt.verify(token, process.env.SECRET)
+    if (!token || !decodedToken.id) {
+      return res.status(401).json({ error: 'token missing or invalid' })
+    }
+    const body = req.body
+    const song = await Song.findOne({ _id: body.id })
+    if (song.user.toString() !== decodedToken.id.toString()) {
+      return res.status(401).json({ error: 'user cannot edit this song' })
+    }
+
     if (
       body.id === undefined ||
       body.name === undefined ||
       body.artist === undefined ||
       body.key === undefined
     ) {
-      response.status(400).json({ error: 'id, name, artist or key undefined' })
+      res.status(400).json({ error: 'id, name, artist or key undefined' })
     } else {
       const update = {
         name: body.name,
@@ -59,7 +95,7 @@ songsRouter.put('/', async (request, response, next) => {
       const updated = await Song.findByIdAndUpdate(body.id, update, {
         new: true
       })
-      response.status(201).json(updated)
+      res.status(201).json(updated)
     }
   } catch (exception) {
     next(exception)

@@ -9,6 +9,7 @@ const bodyParser = require('body-parser')
 const songsRouter = require('./controllers/songs')
 const setlistsRouter = require('./controllers/setlists')
 const usersRouter = require('./controllers/users')
+const loginRouter = require('./controllers/login')
 
 const spotifyApiUrl = 'http://api.spotify.com/v1'
 //change mongoUrl to connect production DB
@@ -23,6 +24,7 @@ app.use(bodyParser.json())
 app.use('/api/song', songsRouter)
 app.use('/api/setlist', setlistsRouter)
 app.use('/api/user', usersRouter)
+app.use('/api/login', loginRouter)
 
 app.get('/', (req, res) => {
   res.send('<h1>This is Setlisted!</h1>')

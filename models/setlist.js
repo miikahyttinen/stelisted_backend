@@ -2,7 +2,13 @@ const mongoose = require('mongoose')
 
 const setlistSchema = mongoose.Schema({
   name: String,
-  songs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Song', required: true }]
+  songs: [
+    { type: mongoose.Schema.Types.ObjectId, ref: 'Song', required: true }
+  ],
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }
 })
 
 setlistSchema.set('toJSON', {

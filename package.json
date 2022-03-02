@@ -29,7 +29,7 @@
     "node-fetch": "^2.6.0",
     "parse-bearer-token": "^1.0.1",
     "query-string": "^6.11.0",
-    "url-parse": "^1.4.7"
+    "url-parse": "^1.5.9"
   },
   "devDependencies": {
     "nodemon": "^1.19.4"

@@ -1,6 +1,6 @@
 # Setlisted (Back end)
 
-Node.js backend for Full Stack Programming project at the University of Helsinki. This is the back end for the application. It stores data and serves data from it's own database and also acts as "a middleman" between Spotify API and front end. Plan is to enrich Spotify data with applications own data. This data could be something like a key of the song(musical term) or sheet music.
+Node.js backend for Full Stack Programming project at the University of Helsinki. This is the back end for the application. It stores data in mongo db and connects to Spotify api as well.
 
 Front end repository, project defintion and working hours here: https://github.com/miikahyttinen/setlisted_frontend/
 
